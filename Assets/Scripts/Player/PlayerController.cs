@@ -35,8 +35,8 @@ namespace PSoft.Player
         public float groundCheckLength;
 
         public LayerMask groundLayer; // For optimization but rn just gonna set it to everything lol.
-        
-        
+
+        public bool bIsJumping = false;
         
         
         private void Awake()
@@ -81,11 +81,8 @@ namespace PSoft.Player
                 // not on ground so apply gravity
                 rb.AddForce(new Vector3(0, -1.0f, 0) * (rb.mass * airFloatValue)); //Manuel Gravity
             }
-           
-            
+
         }
-        
-        
 
         private void OnJump(InputAction.CallbackContext context)
         {
@@ -93,13 +90,19 @@ namespace PSoft.Player
             {
                 Debug.Log("Jump");
                 StartCoroutine(StickTimer());
+                bIsJumping = true;
                 rb.AddForce( jumpSensitivity * this.transform.up, ForceMode.Impulse);
+            }
+            else
+            {
+                Debug.Log("OnJump _grounded FALSE");
             }
         }
         
         // Return true 
         public bool CheckGround()
         {
+            
             // Raycast start/end
             Vector3 origin = transform.position;
             Vector3 direction = -transform.up;
