@@ -36,9 +36,6 @@ namespace PSoft.Player
 
         public LayerMask groundLayer; // For optimization but rn just gonna set it to everything lol.
 
-        public bool bIsJumping = false;
-        
-        
         private void Awake()
         {
             PlayerControls = new PlayerInputActions();
@@ -76,12 +73,10 @@ namespace PSoft.Player
             _cameraRotation = Quaternion.LookRotation(_mainCamera.transform.forward, Vector3.up);
             transform.rotation = (_cameraRotation.normalized * tiltRotation);
 
-            if (CheckGround() == false) 
-            {
-                // not on ground so apply gravity
-                rb.AddForce(new Vector3(0, -1.0f, 0) * (rb.mass * airFloatValue)); //Manuel Gravity
-            }
-
+            rb.AddForce(new Vector3(0, -1.0f, 0) * (rb.mass * airFloatValue)); //Manuel Gravity
+            
+            if(!_grounded)
+                CheckGround();
         }
 
         private void OnJump(InputAction.CallbackContext context)
@@ -90,7 +85,6 @@ namespace PSoft.Player
             {
                 Debug.Log("Jump");
                 StartCoroutine(StickTimer());
-                bIsJumping = true;
                 rb.AddForce( jumpSensitivity * this.transform.up, ForceMode.Impulse);
             }
             else
@@ -100,8 +94,10 @@ namespace PSoft.Player
         }
         
         // Return true 
-        public bool CheckGround()
+        public void CheckGround()
         {
+            if (_grounded)
+                return;
             
             // Raycast start/end
             Vector3 origin = transform.position;
@@ -110,7 +106,7 @@ namespace PSoft.Player
             // DrawLine needs a world location and Raycast needs a direction. We need to create the end point for the draw.
             Vector3 debugDrawEndPoint = origin + direction * groundCheckLength;
             Debug.DrawLine(origin, debugDrawEndPoint, Color.green, 0.1f);
-            
+
             if (Physics.Raycast(origin, direction, out RaycastHit hit, groundCheckLength, groundLayer)) // ToDo: Ground layer later.
             {
                 // ToDo: Should this just be removed if we use the LayerMask?
@@ -119,12 +115,9 @@ namespace PSoft.Player
                     _grounded = true;
                     rb.constraints = RigidbodyConstraints.FreezePosition;
                     Debug.Log("Stuck landing although this already worked so wtf am I doing omg.");
-                    return true;
                 }
             }
-        
-            // No ground
-            return false;
+            
         }
         
         //Added so that the player can take off the ground , otherwise the ray will keep the player grounded
