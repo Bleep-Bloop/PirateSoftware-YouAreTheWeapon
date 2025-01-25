@@ -72,8 +72,6 @@ namespace PSoft.Player
             _cameraRotation = Quaternion.LookRotation(_mainCamera.transform.forward, Vector3.up);
             transform.rotation = (_cameraRotation.normalized * tiltRotation);   
             
-            CheckGround();
-            
             //Manuel Gravity
             rb.AddForce(new Vector3(0, -1.0f, 0) * (rb.mass * airFloatValue));
             
@@ -88,24 +86,11 @@ namespace PSoft.Player
                 rb.AddForce( jumpSensitivity * this.transform.up, ForceMode.Impulse);
             }
         }
-
-        private void CheckGround()
+        public void CheckGround()
         {
-            Debug.DrawLine( stickingPoint.position, (stickingPoint.TransformPoint(stickingPoint.up) * 1), Color.red);
-            Debug.Log("Start point" + stickingPoint);
-            Debug.Log("End point" + stickingPoint.up * 2);
-            
-            if(_grounded) return;
-            RaycastHit hit;
-            if(Physics.Raycast(stickingPoint.position, (stickingPoint.up) * 2,out hit, groundCheckLength))
-            {
-                if (hit.transform.CompareTag("Ground"))
-                {
-                    _grounded = true;
-                    rb.constraints = RigidbodyConstraints.FreezePosition;
-                    Debug.Log("Stuck the landing");
-                }
-            }
+            _grounded = true; 
+            rb.constraints = RigidbodyConstraints.FreezePosition;
+            Debug.Log("Stuck the landing");
         }
         
         //Added so that the player can take off the ground , otherwise the ray will keep the player grounded
