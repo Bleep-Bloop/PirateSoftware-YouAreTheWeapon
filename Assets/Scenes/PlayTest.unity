@@ -605,7 +605,6 @@ GameObject:
   - component: {fileID: 1648368412}
   - component: {fileID: 1648368415}
   - component: {fileID: 1648368414}
-  - component: {fileID: 1648368413}
   m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
@@ -622,33 +621,12 @@ Transform:
   m_GameObject: {fileID: 1648368411}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00033640504, y: -0.0016442925, z: 0.0031335545, w: 0.9999937}
-  m_LocalPosition: {x: 0, y: 2.0899997, z: 0}
-  m_LocalScale: {x: -0.83696413, y: -0.26283264, z: -0.2628326}
+  m_LocalPosition: {x: -0.0000000074506, y: 2.0899997, z: 0}
+  m_LocalScale: {x: 0.80237955, y: 0.34951, z: 0.37364}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1991285971}
   m_LocalEulerAnglesHint: {x: -0.038, y: -0.189, z: 0.359}
---- !u!65 &1648368413
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1648368411}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1648368414
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -804,9 +782,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.125
-  m_Height: 1.7719755
+  m_Height: 1.8133519
   m_Direction: 1
-  m_Center: {x: 0, y: 1.1140122, z: 0}
+  m_Center: {x: 0, y: 1.0933241, z: 0}
 --- !u!64 &1991285966
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6267,7 +6245,7 @@ Transform:
   m_GameObject: {fileID: 1991285963}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.076283306, y: 0.26100004, z: -1.7333395}
+  m_LocalPosition: {x: 0.076283306, y: 1.133, z: -1.7333395}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6292,7 +6270,7 @@ MonoBehaviour:
   jumpSensitivity: 5
   airFloatValue: 5
   stickingPoint: {fileID: 1982461185}
-  groundCheckLength: 0.01
+  groundCheckLength: 0.2
 --- !u!43 &2121261984
 Mesh:
   m_ObjectHideFlags: 0

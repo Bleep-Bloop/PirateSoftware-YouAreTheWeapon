@@ -5,6 +5,8 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Processors;
+
 namespace PSoft.Player
 {
     public class PlayerController : MonoBehaviour
@@ -31,6 +33,8 @@ namespace PSoft.Player
         public Transform stickingPoint;
         private bool _grounded;
         public float groundCheckLength;
+        
+        
         
         
         private void Awake()
@@ -72,10 +76,8 @@ namespace PSoft.Player
             
             //Manuel Gravity
             rb.AddForce(new Vector3(0, -1.0f, 0) * (rb.mass * airFloatValue));
+            
         }
-
-        
-
 
         private void OnJump(InputAction.CallbackContext context)
         {
@@ -89,19 +91,23 @@ namespace PSoft.Player
 
         private void CheckGround()
         {
+            Debug.DrawLine( stickingPoint.position, (stickingPoint.TransformPoint(stickingPoint.up) * 1), Color.red);
+            Debug.Log("Start point" + stickingPoint);
+            Debug.Log("End point" + stickingPoint.up * 2);
+            
             if(_grounded) return;
             RaycastHit hit;
-            if(Physics.Raycast(stickingPoint.position, stickingPoint.up,out hit,1f))
+            if(Physics.Raycast(stickingPoint.position, (stickingPoint.up) * 2,out hit, groundCheckLength))
             {
                 if (hit.transform.CompareTag("Ground"))
                 {
-                    Debug.DrawRay(transform.TransformDirection(stickingPoint.position), transform.TransformDirection(stickingPoint.transform.up) * hit.distance, Color.red);
                     _grounded = true;
                     rb.constraints = RigidbodyConstraints.FreezePosition;
                     Debug.Log("Stuck the landing");
                 }
             }
         }
+        
         //Added so that the player can take off the ground , otherwise the ray will keep the player grounded
         IEnumerator StickTimer()
         {
