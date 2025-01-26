@@ -160,7 +160,6 @@ namespace PSoft
             
             // After arriving rotate the customer to face the player's camera.
             var lookAtRotation = Quaternion.LookRotation(_playerCamera.transform.position - transform.position);
-            // Note .LookRotation constrains rotation to align with forward and up axes so we don't have to set local pitch angle to handle when the camera is above the character.
             transform.rotation = lookAtRotation; // ToDo: I could probably slerp but I am just going to snap rotation for now. Figure out improvement later.
             
             // Display the weapon request after a short delay.
