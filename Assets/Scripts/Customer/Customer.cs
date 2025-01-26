@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -17,12 +18,15 @@ namespace PSoft
         private static readonly int IsMoving = Animator.StringToHash("isMoving");
         [SerializeField] private float delayBeforeRequestDisplay = 2.0f; // Time in seconds before a customer displays their request after arriving at the counter.
 
+        [SerializeField] private GameObject weaponRequestBubblePrefab; // The prefab for the weapon request speech bubble.
+        [SerializeField] private Transform weaponRequestBubbleLocation; // The parent/spawn location of our request bubble.
+        private WorldSpaceTextBubble _activeWeaponRequestBubble;
+        [SerializeField] private float delayBeforeHidingWeaponRequest = 5.0f; // Time in seconds before the request bubble is hidden after displaying.
+        
         /* World locations used in moving this customer. */
         private Vector3 _startWaypoint;     // Customer spawn/starting location.
         private Vector3 _counterWaypoint;   // Location at counter where weapon request is made.
         private Vector3 _exitWaypoint;      // Location where customer exits after receiving weapon.
-        
-
 
         private void Awake()
         {
@@ -51,6 +55,11 @@ namespace PSoft
             // Find and save objects in scene.
             _playerCamera = GameObject.FindWithTag("MainCamera");
             _gameManagerInstance = GameObject.FindFirstObjectByType<GameManager>(); // ToDo: Need if statement because I didn't find these and got error aha. Iunno prob could just leave whatever.
+            
+            // Create this customer's weapon request bubble.
+            _activeWeaponRequestBubble = Instantiate(weaponRequestBubblePrefab, weaponRequestBubbleLocation.position, transform.rotation, weaponRequestBubbleLocation).GetComponent<WorldSpaceTextBubble>();
+            _activeWeaponRequestBubble.gameObject.SetActive(false); // Hide it until ready to display.
+
             // And bind our round functions to the game manager's events.
             _gameManagerInstance.OnRoundStartEvent += OnRoundStart;
             _gameManagerInstance.OnRoundEndEvent += OnRoundEnd;
@@ -89,15 +98,31 @@ namespace PSoft
             return (WeaponType)v.GetValue(Random.Range(0, v.Length));
         }
 
-        // Displays this customer's current weapon request to the player in the game world. This is purely cosmetic.
+        // Displays this customer's weapon request through a world space canvas before hiding it after a delay.
         private void DisplayCurrentWeaponRequestInWorld()
         {
-            // ToDo: Display this customer's weapon request through an image or text bubble.
-            // Temporary debug.log for testing.
-            Debug.Log("Customer::DisplayCurrentWeaponRequest(): I would like a " + _currentWeaponRequest);
+            // Debug.Log("Customer::DisplayCurrentWeaponRequest(): I would like a " + _currentWeaponRequest);
+            
+            // Pass our weapon request to the request bubble.
+            _activeWeaponRequestBubble.SetWeaponRequestImage(_currentWeaponRequest);
+
+            // Rotate the bubble to face the player. ToDo/Question: Do I want to include a .y = 0 (to stop the speech bubble from rotating upwards when camera is above).
+            _activeWeaponRequestBubble.transform.rotation = 
+                Quaternion.LookRotation(_activeWeaponRequestBubble.transform.position - _playerCamera.transform.position);
+ 
+            // Show the weapon request bubble.
+            _activeWeaponRequestBubble.gameObject.SetActive(true);
+            
+            // Hide the request bubble after a delay.
+            Invoke(nameof(HideRequestBubble), delayBeforeHidingWeaponRequest);
         }
-        
-        // OK I am passing a callback to MoveCustomerTo that speicfies what to do upon arrival. This keeps the logic modular and reusable.
+
+        private void HideRequestBubble()
+        {
+            _activeWeaponRequestBubble.gameObject.SetActive(false);
+        }
+
+        // ToDo/Note: I added a callback to the parameters that specifies what to do on arrive. This keeps logic modular and reusable.
         private void MoveCustomerTo(Vector3 inLocation, System.Action onArrival = null)
         {
             if (!_navMeshAgent)
