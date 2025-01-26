@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4514c5a562644f04293c987c7085d50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customerPrefab: {fileID: 5649585873400902761, guid: 674955a4345051146a0be3f5b378e9ef, type: 3}
+  customerPrefab: {fileID: 8508775280524835885, guid: 1da05731631c72a4c9287e3a4aa1f8f8, type: 3}
   firstRoundDelayTime: 5
   customerStartLocation: {fileID: 0}
   customerCounterLocation: {fileID: 0}

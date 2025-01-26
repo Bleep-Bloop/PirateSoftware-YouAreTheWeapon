@@ -792,6 +792,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 889033207299026007, guid: 3f632f068bb31df4da5fb60fcf693147, type: 3}
+      propertyPath: customerPrefab
+      value: 
+      objectReference: {fileID: 8508775280524835885, guid: 1da05731631c72a4c9287e3a4aa1f8f8, type: 3}
+    - target: {fileID: 889033207299026007, guid: 3f632f068bb31df4da5fb60fcf693147, type: 3}
       propertyPath: customerExitLocation
       value: 
       objectReference: {fileID: 1313513903}
@@ -806,6 +810,10 @@ PrefabInstance:
     - target: {fileID: 6183410205904808666, guid: 3f632f068bb31df4da5fb60fcf693147, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6183410205904808666, guid: 3f632f068bb31df4da5fb60fcf693147, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
