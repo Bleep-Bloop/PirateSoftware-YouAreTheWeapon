@@ -16,11 +16,12 @@ namespace PSoft
         private GameObject _playerCamera;
         private Animator _animator; // ToDo: Removing the serialize and going through awake. I think that is the issue aha. BUT, its in a child so will that break something? I guess we will see lol.
         private static readonly int IsMoving = Animator.StringToHash("isMoving");
-        [SerializeField] private float delayBeforeRequestDisplay = 2.0f; // Time in seconds before a customer displays their request after arriving at the counter.
+        [SerializeField] private float smoothRotationSpeed = 1.2f; // The rotation speed used by our SmoothlyRotateToTarget().
 
         [SerializeField] private GameObject weaponRequestBubblePrefab; // The prefab for the weapon request speech bubble.
         [SerializeField] private Transform weaponRequestBubbleLocation; // The parent/spawn location of our request bubble.
         private WorldSpaceTextBubble _activeWeaponRequestBubble;
+        [SerializeField] private float delayBeforeRequestDisplay = 2.0f; // Time in seconds before a customer displays their request after arriving at the counter.
         [SerializeField] private float delayBeforeHidingWeaponRequest = 5.0f; // Time in seconds before the request bubble is hidden after displaying.
         
         /* World locations used in moving this customer. */
@@ -147,6 +148,32 @@ namespace PSoft
             }
         }
 
+        // Starts a coroutine to smoothly rotate this customer to the target rotation.
+        private void RotateCustomerToFaceTarget(Quaternion targetRotation)
+        {
+            StartCoroutine(SmoothlyRotateToTarget(targetRotation));
+        }
+
+        private IEnumerator SmoothlyRotateToTarget(Quaternion targetRotation)
+        {
+            float rotationSpeed = smoothRotationSpeed;
+            float timeElapsed = 0f;
+            
+            // Save the initial rotation before we start rotating.
+            Quaternion startRotation = transform.rotation;
+            
+            // Smoothly rotate over time.
+            while (timeElapsed < 1f)
+            {
+                timeElapsed += Time.deltaTime * rotationSpeed; // Increment time.
+                transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeElapsed);
+                yield return null; // Wait until the next frame.
+            }
+            
+            // Ensure the final rotation is the target rotation
+            transform.rotation = targetRotation;
+        }
+
         public void SetWaypointLocations(Vector3 inStartLocation, Vector3 inCounterLocation, Vector3 inExitLocation)
         {
             _startWaypoint = inStartLocation;
@@ -157,11 +184,15 @@ namespace PSoft
         private void OnReachedCounter()
         {
             Debug.Log("Customer::OnReachedCounter(): Counter Reached");
+
+            // After arriving we rotate the customer to face the player's camera.
+            var directionToPlayer = _playerCamera.transform.position - transform.position; 
+            var targetRotation = Quaternion.LookRotation(directionToPlayer);
+            // We only want to rotate along Y (Up/Down). Note: We use .Euler instead of setting x/y due to how Unity handles them internally. Safer this way.
+            targetRotation = Quaternion.Euler(0, targetRotation.eulerAngles.y, 0);
             
-            // After arriving rotate the customer to face the player's camera.
-            var lookAtRotation = Quaternion.LookRotation(_playerCamera.transform.position - transform.position);
-            transform.rotation = lookAtRotation; // ToDo: I could probably slerp but I am just going to snap rotation for now. Figure out improvement later.
-            
+            RotateCustomerToFaceTarget(targetRotation);
+
             // Display the weapon request after a short delay.
             Invoke(nameof(DisplayCurrentWeaponRequestInWorld), delayBeforeRequestDisplay);
         }
