@@ -16,6 +16,8 @@ namespace PSoft
         [SerializeField] private Transform customerCounterLocation; // The location where a customer requests weapon from player.
         [SerializeField] private Transform customerExitLocation;    // The location where a customer leaves.
 
+        [SerializeField] private GameScore activeGameScore; // Score for the current game. ToDo: weird wording fr.
+
         //* Delegates/Events/Actions *//
         public event Action OnRoundStartEvent;  // Invoked when a new round is starting.
         public event Action OnRoundEndEvent;    // Invoked when a customer has received their request weapon.
@@ -23,11 +25,16 @@ namespace PSoft
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
         {
-            
-            // ToDo: Invoking SpawnCustomer after delay to see if it has to do with the transforms not being set aha.
-            
+            // Bind to respond to game score event changes.
+            activeGameScore.OnHandleSizeSet += OnGameScoreUpdated;
+            activeGameScore.OnIsCorrectWeaponTypeSet += OnGameScoreUpdated;
+            activeGameScore.OnFinalBuildTimeSet += OnGameScoreUpdated;
+            activeGameScore.OnWeaponDurabilitySet += OnGameScoreUpdated;
+
+            activeGameScore.WeaponDurability = 69420;
+
             // Create our customer to be used. ToDo/Question: Should I create here, or just place in scene?
-            //SpawnCustomer();
+            //SpawnCustomer(); ToDo: I added a spawn delay to see if it was causing an issue I was having. I can't remember if this fixed it so I am leaving for now. Will come back before merge (LOL).
             Invoke(nameof(SpawnCustomer), 2.0f);
             
             // TEMPORARY: Start the first round after a short delay.
@@ -73,98 +80,120 @@ namespace PSoft
             _activeCustomer.SetWaypointLocations(startLocation, counterLocation, customerExitLocation.position);
         }
 
-    }
-
-    // Struct used for handling player score in the game.
-    [System.Serializable] // ToDo/Note: If Serializable I can [SerializeField] an instance of this (say in GameManager) and monitor it. Not really necessary but I want to see values so leaving for now.
-    public struct GameScore
-    {
-        // ToDo/Question/Note: I am wasting time making this. I don't even think I will ever use it when the individuals exist. At least learned something I guess.
-        /* Informs observers of a CHANGE in game score. This is different from the other property events as this one
-         * ONLY invokes when a change is made on the value. */
-        public event Action<GameScore> OnGameScoreChanged; // Informs observers of a change in game score. 
-        
-        private void SetProperty<T>(ref T backingField, T newValue) where T : IEquatable<T>
+        // A callback function for events in our GameScore. Receives the GameScoreProperty and it's value.
+        private void OnGameScoreUpdated<T>(T value, GameScoreProperty scoreProperty)
         {
-            // Check if the value being set to BackingField is different from its current value.
-            bool newValueIsDifferent = !backingField.Equals(newValue);
+            //* Note: Currently this function will not run when a change is made to our _activeGameScore in the inspector during runtime. *//
+            
+            Debug.Log($"GameManager::OnGameScoreUpdate(): {scoreProperty}'s new value is {value}");
 
-            // Update the backing field.
-            backingField = newValue;
-
-            // If the value was different, inform observers. Note: This is more expensive so we call only on change.
-            if (newValueIsDifferent)
-                OnGameScoreChanged?.Invoke(this);
-        }
-        
-        
-        private HandleSize _handleSize; // (Backing Field) The handle size of the weapon. // ToDo/Question: Should the handle size give a score, or work more as a multiplier because it correlates to difficulty.
-        public event Action<HandleSize> OnHandleSizeSet; // Informs observers of _handleSize's value after setting.
-        public HandleSize HandleSize
-        {
-            get => _handleSize;
-
-            set
+            switch (scoreProperty)
             {
-                _handleSize = value; // Assign value to the backing field.
-                OnHandleSizeSet?.Invoke(_handleSize); // Inform observers.
+                case GameScoreProperty.None:
+                    Debug.Log("GameManager::OnGameScoreUpdate() scoreProperty is None.");
+                    break;
+                case GameScoreProperty.HandleSize:
+                    // ToDo: Response/React.
+                    break;
+                case GameScoreProperty.IsCorrectWeaponType:
+                    // ToDo: Response/React.
+                    break;
+                case GameScoreProperty.FinalBuildTime:
+                    // ToDo: Response/React.
+                    break;
+                case GameScoreProperty.WeaponDurability:
+                    Debug.Log($"Weapon Durability Update : {value}");
+                    // ToDo: Update health bar probably.
+                    break;
+                default:
+                    Debug.Log("GameManager::OnGameScoreUpdate() scoreProperty response not found.");
+                    break;
             }
         }
         
-        private bool _isCorrectWeaponType;  // (Backing Field) Whether or not the weapon made was the same as the customer's request.
-        public event Action<bool> OnIsCorrectWeaponTypeSet; // Informs observers of _isCorrectWeaponType's value after setting.
-        public bool IsCorrectWeaponType // Whether or not the weapon made was the same as the customer's request.
+    }
+    
+    // A struct used for handling player score in the game.
+    [System.Serializable]
+    public struct GameScore
+    {
+        // Note: These are invoked in their associated setters, even if the value is not changed. *//
+        public event Action<HandleSize, GameScoreProperty> OnHandleSizeSet;
+        public event Action<bool, GameScoreProperty> OnIsCorrectWeaponTypeSet;
+        public event Action<float, GameScoreProperty> OnFinalBuildTimeSet;
+        public event Action<int, GameScoreProperty> OnWeaponDurabilitySet;
+        
+        [SerializeField] private HandleSize handleSize;     // (Backing Field) The handle size of the weapon. // ToDo/Question: Should the handle size give a score, or work more as a multiplier because it correlates to difficulty.
+        [SerializeField] private bool isCorrectWeaponType;  // (Backing Field) Whether or not the weapon made was the same as the customer's request.
+        [SerializeField] private float finalBuildTime;      // (Backing Field) The time it took to build the weapon.
+        [SerializeField] private int weaponDurability;      // (Backing Field) The weapon's final durability after turning in.
+        // ToDo: Score Ranking[SerializeField] private ScoreRanking _scoreRanking; // ToDo: Get/Set/Calulating and all that. I just want to test, do I need to make public things also [SeriliazeField] to show (like UPROPERTY and USTRUCT)? probably not but just double  checkk.
+
+        public HandleSize HandleSize
         {
-            get => _isCorrectWeaponType;
+            get => handleSize;
 
             set
             {
-                _isCorrectWeaponType = value; // Assign value to the backing field.
-                OnIsCorrectWeaponTypeSet?.Invoke(_isCorrectWeaponType);
+                handleSize = value; // Assign value to the backing field.
+                OnHandleSizeSet?.Invoke(handleSize, GameScoreProperty.HandleSize); // Inform observers.
+            }
+        }
+
+        public bool IsCorrectWeaponType // Whether or not the weapon made was the same as the customer's request.
+        {
+            get => isCorrectWeaponType;
+
+            set
+            {
+                isCorrectWeaponType = value; // Assign value to the backing field.
+                OnIsCorrectWeaponTypeSet?.Invoke(isCorrectWeaponType, GameScoreProperty.IsCorrectWeaponType);
             }
         }
 
         // ToDo/Question: Should I have buildTime or final build time? I feel like Final build time best way game manager can pass time when finished, doesn't need to continously update here right.
-        private float _finalBuildTime; // (Backing Field) The time it took to build the weapon.
-        public event Action<float> OnFinalBuildTimeSet; // Informs observers of _finalBuildTime's value after setting.
-
         public float FinalBuildTime // The time it took to build the weapon.
         {
-            get => _finalBuildTime;
+            get => finalBuildTime;
 
             set
             {
-                _finalBuildTime = value; // Assign value to the backing field.
-                OnFinalBuildTimeSet?.Invoke(_finalBuildTime); // Inform observers.
+                finalBuildTime = value; // Assign value to the backing field.
+                OnFinalBuildTimeSet?.Invoke(finalBuildTime, GameScoreProperty.FinalBuildTime); // Inform observers.
             }
         }
 
-        private int _weaponDurability; // (Backing Field) The weapon's final durability after turning in.
-        public event Action<int> OnWeaponDurabilitySet; // Informs observers of _weaponDurability's value after setting.
-        public int WeaponDurability // The weapon' s final durability after turning in.
+        public int WeaponDurability // The weapon's final durability after turning in.
         {
-            get => _weaponDurability;
+            get => weaponDurability;
 
             set
             {
-                _weaponDurability = value; // Assign value to the backing field.
-                OnWeaponDurabilitySet?.Invoke(_weaponDurability); // Notify observers.
+                weaponDurability = value; // Assign value to the backing field.
+                OnWeaponDurabilitySet?.Invoke(weaponDurability, GameScoreProperty.WeaponDurability); // Notify observers.
             }
-        }
-
+        } 
     }
-    
-    // An enum representing the ranks for player's score.
-    public enum ScoreRankings
+
+    // An enum representing the members of a GameScore.
+    public enum GameScoreProperty
     {
+        None,
+        HandleSize,
+        IsCorrectWeaponType,
+        FinalBuildTime,
+        WeaponDurability
+    }
+
+    // An enum representing the possible ranks for a score.
+    public enum ScoreRanking
+    {
+        Unfinished,
         S,  // Highest (95% up) (iunno how score looks yet so 95% means very little of course).
         A,
         B,
         C,
         D
     }
-    
-    
-    
-    
+
 }
