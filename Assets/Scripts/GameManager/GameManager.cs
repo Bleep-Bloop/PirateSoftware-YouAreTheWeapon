@@ -74,4 +74,97 @@ namespace PSoft
         }
 
     }
+
+    // Struct used for handling player score in the game.
+    [System.Serializable] // ToDo/Note: If Serializable I can [SerializeField] an instance of this (say in GameManager) and monitor it. Not really necessary but I want to see values so leaving for now.
+    public struct GameScore
+    {
+        // ToDo/Question/Note: I am wasting time making this. I don't even think I will ever use it when the individuals exist. At least learned something I guess.
+        /* Informs observers of a CHANGE in game score. This is different from the other property events as this one
+         * ONLY invokes when a change is made on the value. */
+        public event Action<GameScore> OnGameScoreChanged; // Informs observers of a change in game score. 
+        
+        private void SetProperty<T>(ref T backingField, T newValue) where T : IEquatable<T>
+        {
+            // Check if the value being set to BackingField is different from its current value.
+            bool newValueIsDifferent = !backingField.Equals(newValue);
+
+            // Update the backing field.
+            backingField = newValue;
+
+            // If the value was different, inform observers. Note: This is more expensive so we call only on change.
+            if (newValueIsDifferent)
+                OnGameScoreChanged?.Invoke(this);
+        }
+        
+        
+        private HandleSize _handleSize; // (Backing Field) The handle size of the weapon. // ToDo/Question: Should the handle size give a score, or work more as a multiplier because it correlates to difficulty.
+        public event Action<HandleSize> OnHandleSizeSet; // Informs observers of _handleSize's value after setting.
+        public HandleSize HandleSize
+        {
+            get => _handleSize;
+
+            set
+            {
+                _handleSize = value; // Assign value to the backing field.
+                OnHandleSizeSet?.Invoke(_handleSize); // Inform observers.
+            }
+        }
+        
+        private bool _isCorrectWeaponType;  // (Backing Field) Whether or not the weapon made was the same as the customer's request.
+        public event Action<bool> OnIsCorrectWeaponTypeSet; // Informs observers of _isCorrectWeaponType's value after setting.
+        public bool IsCorrectWeaponType // Whether or not the weapon made was the same as the customer's request.
+        {
+            get => _isCorrectWeaponType;
+
+            set
+            {
+                _isCorrectWeaponType = value; // Assign value to the backing field.
+                OnIsCorrectWeaponTypeSet?.Invoke(_isCorrectWeaponType);
+            }
+        }
+
+        // ToDo/Question: Should I have buildTime or final build time? I feel like Final build time best way game manager can pass time when finished, doesn't need to continously update here right.
+        private float _finalBuildTime; // (Backing Field) The time it took to build the weapon.
+        public event Action<float> OnFinalBuildTimeSet; // Informs observers of _finalBuildTime's value after setting.
+
+        public float FinalBuildTime // The time it took to build the weapon.
+        {
+            get => _finalBuildTime;
+
+            set
+            {
+                _finalBuildTime = value; // Assign value to the backing field.
+                OnFinalBuildTimeSet?.Invoke(_finalBuildTime); // Inform observers.
+            }
+        }
+
+        private int _weaponDurability; // (Backing Field) The weapon's final durability after turning in.
+        public event Action<int> OnWeaponDurabilitySet; // Informs observers of _weaponDurability's value after setting.
+        public int WeaponDurability // The weapon' s final durability after turning in.
+        {
+            get => _weaponDurability;
+
+            set
+            {
+                _weaponDurability = value; // Assign value to the backing field.
+                OnWeaponDurabilitySet?.Invoke(_weaponDurability); // Notify observers.
+            }
+        }
+
+    }
+    
+    // An enum representing the ranks for player's score.
+    public enum ScoreRankings
+    {
+        S,  // Highest (95% up) (iunno how score looks yet so 95% means very little of course).
+        A,
+        B,
+        C,
+        D
+    }
+    
+    
+    
+    
 }
