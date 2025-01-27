@@ -23,8 +23,12 @@ namespace PSoft
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Start()
         {
+            
+            // ToDo: Invoking SpawnCustomer after delay to see if it has to do with the transforms not being set aha.
+            
             // Create our customer to be used. ToDo/Question: Should I create here, or just place in scene?
-            SpawnCustomer();
+            //SpawnCustomer();
+            Invoke(nameof(SpawnCustomer), 2.0f);
             
             // TEMPORARY: Start the first round after a short delay.
             Invoke(nameof(StartNewRound), firstRoundDelayTime);
@@ -56,12 +60,17 @@ namespace PSoft
         // Creates a customer to be used in the game loop. Passing relevant data and saving it to our _activeCustomer property.
         private void SpawnCustomer()
         {
-            _activeCustomer =
-                Instantiate(customerPrefab, customerStartLocation.position, customerStartLocation.rotation)
-                    .GetComponent<Customer>();
+            Vector3 counterLocation = customerCounterLocation.position;
+            Vector3 startLocation = customerStartLocation.position;
+            // Get the rotation to spawn the customer facing the counter location.
+            var spawnRotation =
+                Quaternion.LookRotation(counterLocation - startLocation);
+            
+            // Spawn the customer and save a reference.
+            _activeCustomer = Instantiate(customerPrefab, startLocation, spawnRotation).GetComponent<Customer>();
+            
             // Ensure this customer has the proper scene location data.
-            _activeCustomer.SetWaypointLocations(customerStartLocation.position, customerCounterLocation.position,
-                customerExitLocation.position);
+            _activeCustomer.SetWaypointLocations(startLocation, counterLocation, customerExitLocation.position);
         }
 
     }
