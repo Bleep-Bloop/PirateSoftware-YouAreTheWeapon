@@ -183,6 +183,7 @@ namespace PSoft
         WeaponDurability
     }
 
+    // ToDo: Return after scoring finalized to implement the score ranking.
     // An enum representing the possible ranks for a score.
     public enum ScoreRanking
     {
