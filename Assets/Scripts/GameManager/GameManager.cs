@@ -31,8 +31,6 @@ namespace PSoft
             activeGameScore.OnFinalBuildTimeSet += OnGameScoreUpdated;
             activeGameScore.OnWeaponDurabilitySet += OnGameScoreUpdated;
 
-            activeGameScore.WeaponDurability = 69420;
-
             // Create our customer to be used. ToDo/Question: Should I create here, or just place in scene?
             //SpawnCustomer(); ToDo: I added a spawn delay to see if it was causing an issue I was having. I can't remember if this fixed it so I am leaving for now. Will come back before merge (LOL).
             Invoke(nameof(SpawnCustomer), 2.0f);
