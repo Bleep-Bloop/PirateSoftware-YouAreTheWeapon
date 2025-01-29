@@ -62,6 +62,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraSwap"",
+                    ""type"": ""Button"",
+                    ""id"": ""20ac30b4-e1cd-4e44-be37-9bbc76bf2097"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +161,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""CameraLock"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""32eb52fe-8fa3-48cf-8531-39be32d9c0a9"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraSwap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -164,6 +184,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_WeaponControl_Tilt = m_WeaponControl.FindAction("Tilt", throwIfNotFound: true);
         m_WeaponControl_CameraTilt = m_WeaponControl.FindAction("CameraTilt", throwIfNotFound: true);
         m_WeaponControl_CameraLock = m_WeaponControl.FindAction("CameraLock", throwIfNotFound: true);
+        m_WeaponControl_CameraSwap = m_WeaponControl.FindAction("CameraSwap", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -234,6 +255,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_WeaponControl_Tilt;
     private readonly InputAction m_WeaponControl_CameraTilt;
     private readonly InputAction m_WeaponControl_CameraLock;
+    private readonly InputAction m_WeaponControl_CameraSwap;
     public struct WeaponControlActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -242,6 +264,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Tilt => m_Wrapper.m_WeaponControl_Tilt;
         public InputAction @CameraTilt => m_Wrapper.m_WeaponControl_CameraTilt;
         public InputAction @CameraLock => m_Wrapper.m_WeaponControl_CameraLock;
+        public InputAction @CameraSwap => m_Wrapper.m_WeaponControl_CameraSwap;
         public InputActionMap Get() { return m_Wrapper.m_WeaponControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -263,6 +286,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @CameraLock.started += instance.OnCameraLock;
             @CameraLock.performed += instance.OnCameraLock;
             @CameraLock.canceled += instance.OnCameraLock;
+            @CameraSwap.started += instance.OnCameraSwap;
+            @CameraSwap.performed += instance.OnCameraSwap;
+            @CameraSwap.canceled += instance.OnCameraSwap;
         }
 
         private void UnregisterCallbacks(IWeaponControlActions instance)
@@ -279,6 +305,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @CameraLock.started -= instance.OnCameraLock;
             @CameraLock.performed -= instance.OnCameraLock;
             @CameraLock.canceled -= instance.OnCameraLock;
+            @CameraSwap.started -= instance.OnCameraSwap;
+            @CameraSwap.performed -= instance.OnCameraSwap;
+            @CameraSwap.canceled -= instance.OnCameraSwap;
         }
 
         public void RemoveCallbacks(IWeaponControlActions instance)
@@ -302,5 +331,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnTilt(InputAction.CallbackContext context);
         void OnCameraTilt(InputAction.CallbackContext context);
         void OnCameraLock(InputAction.CallbackContext context);
+        void OnCameraSwap(InputAction.CallbackContext context);
     }
 }
