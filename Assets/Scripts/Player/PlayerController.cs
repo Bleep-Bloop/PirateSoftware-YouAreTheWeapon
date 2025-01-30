@@ -29,7 +29,7 @@ namespace PSoft.Player
         private Vector3 _cameraVector;
         private Quaternion _cameraRotation;
         
-        [Header("Controls")]
+        [Header("Handle Controls")]
         public float tiltSensitivity;
         public float jumpSensitivity;
         public float airFloatValue;
@@ -37,6 +37,7 @@ namespace PSoft.Player
         private bool _grounded;
         public float groundCheckLength;
         private bool _freeLook;
+           
         
         //Basic Controller setup
         private void Awake()

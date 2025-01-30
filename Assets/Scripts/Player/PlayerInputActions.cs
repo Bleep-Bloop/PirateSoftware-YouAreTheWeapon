@@ -174,6 +174,120 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Ghost"",
+            ""id"": ""90235858-c27f-4a6b-88cc-1060817039e4"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""ccb31f23-677b-4b85-ada9-d2fbf109b314"",
+                    ""expectedControlType"": ""Vector3"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""d3439e3b-a66c-46d8-847c-b06cfdde81d6"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""8021ea46-b60a-4169-9c4c-ff102fc4dd2d"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""3D Vector"",
+                    ""id"": ""e12f4fba-68fe-47a7-a852-d9acdb030f61"",
+                    ""path"": ""3DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""49b20d64-2dfb-44c6-823a-ae8a00f1514c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""70e574ea-4e1a-4fb3-b6fb-0898b965ad33"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""a7f431c0-6e5e-47bf-8fc6-61ac04845eba"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""66bb9bd6-fc3a-48d5-9ad2-a1fbb9c4de6f"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""forward"",
+                    ""id"": ""ae68f066-dcb2-4ab9-8c1a-bbe8ba858aca"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""backward"",
+                    ""id"": ""7abce622-9c76-48b5-b1c0-578a07f9f8bb"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -185,11 +299,16 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_WeaponControl_CameraTilt = m_WeaponControl.FindAction("CameraTilt", throwIfNotFound: true);
         m_WeaponControl_CameraLock = m_WeaponControl.FindAction("CameraLock", throwIfNotFound: true);
         m_WeaponControl_CameraSwap = m_WeaponControl.FindAction("CameraSwap", throwIfNotFound: true);
+        // Ghost
+        m_Ghost = asset.FindActionMap("Ghost", throwIfNotFound: true);
+        m_Ghost_Move = m_Ghost.FindAction("Move", throwIfNotFound: true);
+        m_Ghost_Look = m_Ghost.FindAction("Look", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
     {
         UnityEngine.Debug.Assert(!m_WeaponControl.enabled, "This will cause a leak and performance issues, PlayerInputActions.WeaponControl.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Ghost.enabled, "This will cause a leak and performance issues, PlayerInputActions.Ghost.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -325,6 +444,60 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public WeaponControlActions @WeaponControl => new WeaponControlActions(this);
+
+    // Ghost
+    private readonly InputActionMap m_Ghost;
+    private List<IGhostActions> m_GhostActionsCallbackInterfaces = new List<IGhostActions>();
+    private readonly InputAction m_Ghost_Move;
+    private readonly InputAction m_Ghost_Look;
+    public struct GhostActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public GhostActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_Ghost_Move;
+        public InputAction @Look => m_Wrapper.m_Ghost_Look;
+        public InputActionMap Get() { return m_Wrapper.m_Ghost; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GhostActions set) { return set.Get(); }
+        public void AddCallbacks(IGhostActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GhostActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GhostActionsCallbackInterfaces.Add(instance);
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
+            @Look.started += instance.OnLook;
+            @Look.performed += instance.OnLook;
+            @Look.canceled += instance.OnLook;
+        }
+
+        private void UnregisterCallbacks(IGhostActions instance)
+        {
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
+            @Look.started -= instance.OnLook;
+            @Look.performed -= instance.OnLook;
+            @Look.canceled -= instance.OnLook;
+        }
+
+        public void RemoveCallbacks(IGhostActions instance)
+        {
+            if (m_Wrapper.m_GhostActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGhostActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GhostActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GhostActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GhostActions @Ghost => new GhostActions(this);
     public interface IWeaponControlActions
     {
         void OnJump(InputAction.CallbackContext context);
@@ -332,5 +505,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnCameraTilt(InputAction.CallbackContext context);
         void OnCameraLock(InputAction.CallbackContext context);
         void OnCameraSwap(InputAction.CallbackContext context);
+    }
+    public interface IGhostActions
+    {
+        void OnMove(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
     }
 }
