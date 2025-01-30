@@ -20,5 +20,16 @@ namespace PSoft
     Medium = 2,
     Large = 3
   }
+  
+  // An enum representing the parts of a weapon.
+  public enum WeaponPartType
+  {
+    None,
+    Pommel,
+    Hilt,
+    Handle,
+    Blade,
+    // ToDo: Should this be in the assembly order? Might make it easier but do we always go in order? I don't know haha.
+  }
 
 }

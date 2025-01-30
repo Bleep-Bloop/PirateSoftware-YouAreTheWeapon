@@ -271,6 +271,66 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2100760750}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &519569169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 519569171}
+  - component: {fileID: 519569170}
+  m_Layer: 0
+  m_Name: WeaponAssemblerTest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &519569170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519569169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43448c0fb86d4a546ac2bd77b0d96427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handleParts:
+  - {fileID: 11400000, guid: b1b4f087671d56247b54aa1677dfa392, type: 2}
+  - {fileID: 11400000, guid: adfb16954ab993a4d87f247763f11bb3, type: 2}
+  bladeParts:
+  - {fileID: 11400000, guid: e963d140b45985845aa69051c1320814, type: 2}
+  - {fileID: 11400000, guid: 7609c950e9209734fa84e887584bba91, type: 2}
+  pommelParts:
+  - {fileID: 11400000, guid: be68ad83c02405e4b8150d178f3610ec, type: 2}
+  - {fileID: 11400000, guid: c8635ff97056eb747a551d05c2dfc1d8, type: 2}
+  hiltParts:
+  - {fileID: 11400000, guid: 8d77b819282cefd4c889c2bc3f2cd0e4, type: 2}
+  - {fileID: 11400000, guid: f694759cfa7ff3241be89891215e25a8, type: 2}
+  pommelAttachPoint: {fileID: 0}
+  hiltAttachPoint: {fileID: 0}
+  handleAttachPoint: {fileID: 0}
+  bladeAttachPoint: {fileID: 0}
+--- !u!4 &519569171
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519569169}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.2119174, y: 5, z: -8.13}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,3 +888,4 @@ SceneRoots:
   - {fileID: 203844589}
   - {fileID: 1197221016}
   - {fileID: 2603718528537750167}
+  - {fileID: 519569171}

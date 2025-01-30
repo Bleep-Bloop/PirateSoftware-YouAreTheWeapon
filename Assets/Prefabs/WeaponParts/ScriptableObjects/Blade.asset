@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Blade
+  m_EditorClassIdentifier: Assembly-CSharp:PSoft:WeaponPart
+  partType: 4
+  partPrefab: {fileID: 5307238260376696754, guid: dc8c19f1adf95be45b1389ee0ada4d7c, type: 3}
+  pommelAttachPoint: {fileID: 0}
+  hiltAttachPoint: {fileID: 0}
+  handleAttachPoint: {fileID: 0}
+  bladeAttachPoint: {fileID: 0}
