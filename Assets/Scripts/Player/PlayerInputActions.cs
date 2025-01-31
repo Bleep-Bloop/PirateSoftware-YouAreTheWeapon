@@ -174,6 +174,140 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""GhostControl"",
+            ""id"": ""90235858-c27f-4a6b-88cc-1060817039e4"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""ccb31f23-677b-4b85-ada9-d2fbf109b314"",
+                    ""expectedControlType"": ""Vector3"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""d3439e3b-a66c-46d8-847c-b06cfdde81d6"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Possess"",
+                    ""type"": ""Button"",
+                    ""id"": ""a7e63dad-ce07-4dc7-9b38-e95f54d4ed59"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""8021ea46-b60a-4169-9c4c-ff102fc4dd2d"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""WASDCtrlSpace"",
+                    ""id"": ""e12f4fba-68fe-47a7-a852-d9acdb030f61"",
+                    ""path"": ""3DVector(mode=1)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""49b20d64-2dfb-44c6-823a-ae8a00f1514c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""70e574ea-4e1a-4fb3-b6fb-0898b965ad33"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""a7f431c0-6e5e-47bf-8fc6-61ac04845eba"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""66bb9bd6-fc3a-48d5-9ad2-a1fbb9c4de6f"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""forward"",
+                    ""id"": ""ae68f066-dcb2-4ab9-8c1a-bbe8ba858aca"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""backward"",
+                    ""id"": ""7abce622-9c76-48b5-b1c0-578a07f9f8bb"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b7a70730-351f-4c73-877b-e5114ff0dbe8"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Possess"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -185,11 +319,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_WeaponControl_CameraTilt = m_WeaponControl.FindAction("CameraTilt", throwIfNotFound: true);
         m_WeaponControl_CameraLock = m_WeaponControl.FindAction("CameraLock", throwIfNotFound: true);
         m_WeaponControl_CameraSwap = m_WeaponControl.FindAction("CameraSwap", throwIfNotFound: true);
+        // GhostControl
+        m_GhostControl = asset.FindActionMap("GhostControl", throwIfNotFound: true);
+        m_GhostControl_Move = m_GhostControl.FindAction("Move", throwIfNotFound: true);
+        m_GhostControl_Look = m_GhostControl.FindAction("Look", throwIfNotFound: true);
+        m_GhostControl_Possess = m_GhostControl.FindAction("Possess", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
     {
         UnityEngine.Debug.Assert(!m_WeaponControl.enabled, "This will cause a leak and performance issues, PlayerInputActions.WeaponControl.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_GhostControl.enabled, "This will cause a leak and performance issues, PlayerInputActions.GhostControl.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -325,6 +465,68 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public WeaponControlActions @WeaponControl => new WeaponControlActions(this);
+
+    // GhostControl
+    private readonly InputActionMap m_GhostControl;
+    private List<IGhostControlActions> m_GhostControlActionsCallbackInterfaces = new List<IGhostControlActions>();
+    private readonly InputAction m_GhostControl_Move;
+    private readonly InputAction m_GhostControl_Look;
+    private readonly InputAction m_GhostControl_Possess;
+    public struct GhostControlActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public GhostControlActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_GhostControl_Move;
+        public InputAction @Look => m_Wrapper.m_GhostControl_Look;
+        public InputAction @Possess => m_Wrapper.m_GhostControl_Possess;
+        public InputActionMap Get() { return m_Wrapper.m_GhostControl; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GhostControlActions set) { return set.Get(); }
+        public void AddCallbacks(IGhostControlActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GhostControlActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GhostControlActionsCallbackInterfaces.Add(instance);
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
+            @Look.started += instance.OnLook;
+            @Look.performed += instance.OnLook;
+            @Look.canceled += instance.OnLook;
+            @Possess.started += instance.OnPossess;
+            @Possess.performed += instance.OnPossess;
+            @Possess.canceled += instance.OnPossess;
+        }
+
+        private void UnregisterCallbacks(IGhostControlActions instance)
+        {
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
+            @Look.started -= instance.OnLook;
+            @Look.performed -= instance.OnLook;
+            @Look.canceled -= instance.OnLook;
+            @Possess.started -= instance.OnPossess;
+            @Possess.performed -= instance.OnPossess;
+            @Possess.canceled -= instance.OnPossess;
+        }
+
+        public void RemoveCallbacks(IGhostControlActions instance)
+        {
+            if (m_Wrapper.m_GhostControlActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGhostControlActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GhostControlActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GhostControlActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GhostControlActions @GhostControl => new GhostControlActions(this);
     public interface IWeaponControlActions
     {
         void OnJump(InputAction.CallbackContext context);
@@ -332,5 +534,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnCameraTilt(InputAction.CallbackContext context);
         void OnCameraLock(InputAction.CallbackContext context);
         void OnCameraSwap(InputAction.CallbackContext context);
+    }
+    public interface IGhostControlActions
+    {
+        void OnMove(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
+        void OnPossess(InputAction.CallbackContext context);
     }
 }
