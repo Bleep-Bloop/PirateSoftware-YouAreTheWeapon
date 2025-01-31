@@ -176,7 +176,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""Ghost"",
+            ""name"": ""GhostControl"",
             ""id"": ""90235858-c27f-4a6b-88cc-1060817039e4"",
             ""actions"": [
                 {
@@ -196,6 +196,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Possess"",
+                    ""type"": ""Button"",
+                    ""id"": ""a7e63dad-ce07-4dc7-9b38-e95f54d4ed59"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -211,9 +220,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""3D Vector"",
+                    ""name"": ""WASDCtrlSpace"",
                     ""id"": ""e12f4fba-68fe-47a7-a852-d9acdb030f61"",
-                    ""path"": ""3DVector"",
+                    ""path"": ""3DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -286,6 +295,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b7a70730-351f-4c73-877b-e5114ff0dbe8"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Possess"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -299,16 +319,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_WeaponControl_CameraTilt = m_WeaponControl.FindAction("CameraTilt", throwIfNotFound: true);
         m_WeaponControl_CameraLock = m_WeaponControl.FindAction("CameraLock", throwIfNotFound: true);
         m_WeaponControl_CameraSwap = m_WeaponControl.FindAction("CameraSwap", throwIfNotFound: true);
-        // Ghost
-        m_Ghost = asset.FindActionMap("Ghost", throwIfNotFound: true);
-        m_Ghost_Move = m_Ghost.FindAction("Move", throwIfNotFound: true);
-        m_Ghost_Look = m_Ghost.FindAction("Look", throwIfNotFound: true);
+        // GhostControl
+        m_GhostControl = asset.FindActionMap("GhostControl", throwIfNotFound: true);
+        m_GhostControl_Move = m_GhostControl.FindAction("Move", throwIfNotFound: true);
+        m_GhostControl_Look = m_GhostControl.FindAction("Look", throwIfNotFound: true);
+        m_GhostControl_Possess = m_GhostControl.FindAction("Possess", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
     {
         UnityEngine.Debug.Assert(!m_WeaponControl.enabled, "This will cause a leak and performance issues, PlayerInputActions.WeaponControl.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_Ghost.enabled, "This will cause a leak and performance issues, PlayerInputActions.Ghost.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_GhostControl.enabled, "This will cause a leak and performance issues, PlayerInputActions.GhostControl.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -445,35 +466,40 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     }
     public WeaponControlActions @WeaponControl => new WeaponControlActions(this);
 
-    // Ghost
-    private readonly InputActionMap m_Ghost;
-    private List<IGhostActions> m_GhostActionsCallbackInterfaces = new List<IGhostActions>();
-    private readonly InputAction m_Ghost_Move;
-    private readonly InputAction m_Ghost_Look;
-    public struct GhostActions
+    // GhostControl
+    private readonly InputActionMap m_GhostControl;
+    private List<IGhostControlActions> m_GhostControlActionsCallbackInterfaces = new List<IGhostControlActions>();
+    private readonly InputAction m_GhostControl_Move;
+    private readonly InputAction m_GhostControl_Look;
+    private readonly InputAction m_GhostControl_Possess;
+    public struct GhostControlActions
     {
         private @PlayerInputActions m_Wrapper;
-        public GhostActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Ghost_Move;
-        public InputAction @Look => m_Wrapper.m_Ghost_Look;
-        public InputActionMap Get() { return m_Wrapper.m_Ghost; }
+        public GhostControlActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_GhostControl_Move;
+        public InputAction @Look => m_Wrapper.m_GhostControl_Look;
+        public InputAction @Possess => m_Wrapper.m_GhostControl_Possess;
+        public InputActionMap Get() { return m_Wrapper.m_GhostControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(GhostActions set) { return set.Get(); }
-        public void AddCallbacks(IGhostActions instance)
+        public static implicit operator InputActionMap(GhostControlActions set) { return set.Get(); }
+        public void AddCallbacks(IGhostControlActions instance)
         {
-            if (instance == null || m_Wrapper.m_GhostActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_GhostActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_GhostControlActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GhostControlActionsCallbackInterfaces.Add(instance);
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
+            @Possess.started += instance.OnPossess;
+            @Possess.performed += instance.OnPossess;
+            @Possess.canceled += instance.OnPossess;
         }
 
-        private void UnregisterCallbacks(IGhostActions instance)
+        private void UnregisterCallbacks(IGhostControlActions instance)
         {
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
@@ -481,23 +507,26 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
+            @Possess.started -= instance.OnPossess;
+            @Possess.performed -= instance.OnPossess;
+            @Possess.canceled -= instance.OnPossess;
         }
 
-        public void RemoveCallbacks(IGhostActions instance)
+        public void RemoveCallbacks(IGhostControlActions instance)
         {
-            if (m_Wrapper.m_GhostActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_GhostControlActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IGhostActions instance)
+        public void SetCallbacks(IGhostControlActions instance)
         {
-            foreach (var item in m_Wrapper.m_GhostActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_GhostControlActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_GhostActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_GhostControlActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public GhostActions @Ghost => new GhostActions(this);
+    public GhostControlActions @GhostControl => new GhostControlActions(this);
     public interface IWeaponControlActions
     {
         void OnJump(InputAction.CallbackContext context);
@@ -506,9 +535,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnCameraLock(InputAction.CallbackContext context);
         void OnCameraSwap(InputAction.CallbackContext context);
     }
-    public interface IGhostActions
+    public interface IGhostControlActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnPossess(InputAction.CallbackContext context);
     }
 }

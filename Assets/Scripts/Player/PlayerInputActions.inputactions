@@ -154,7 +154,7 @@
             ]
         },
         {
-            "name": "Ghost",
+            "name": "GhostControl",
             "id": "90235858-c27f-4a6b-88cc-1060817039e4",
             "actions": [
                 {
@@ -174,6 +174,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Possess",
+                    "type": "Button",
+                    "id": "a7e63dad-ce07-4dc7-9b38-e95f54d4ed59",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -189,9 +198,9 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "3D Vector",
+                    "name": "WASDCtrlSpace",
                     "id": "e12f4fba-68fe-47a7-a852-d9acdb030f61",
-                    "path": "3DVector",
+                    "path": "3DVector(mode=1)",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -264,6 +273,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b7a70730-351f-4c73-877b-e5114ff0dbe8",
+                    "path": "<Keyboard>/e",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Possess",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
